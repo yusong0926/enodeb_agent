@@ -31,6 +31,8 @@ enodeb_stats_url = "http://"+onos_url+"/onos/progran/stats/enodeb"
 profile_url = "http://"+onos_url+"/onos/progran/profile"
 t = 10
 
+enodeb_log = open("enodeb_log.txt",'w')
+
 """
 logging_format = '%(asctime)-15s %(message)s'
 logging.basicConfig(format=logging_format)
@@ -46,6 +48,7 @@ def shutdown_hook(kafka_producer):
     """
     logging.info('Shutdown kafka producer')
     kafka_producer.close()
+    enodeb_log.close()
 
 
 @app.route('/')
@@ -95,6 +98,7 @@ def publish_stats(enodeb_stats):
             msg = 'enodeb' + ',' + str(e)   
             producer.send(topic=produce_topic, key=str(e['enodeb']).encode('utf-8'), value=msg.encode('utf-8'))
             logging.info('Publishing Enodeb event: %s', msg)
+            enodeb_log.write(str(e)+'\n')
     except Exception as e:
             return e.__str__()
 
