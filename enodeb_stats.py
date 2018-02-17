@@ -33,14 +33,19 @@ def get_enodeb_stats(data, enodeb, p_specs):
             logger.debug(p)
             for s in p['StatsArray']:
                 sd = {}
+                logger.debug("111111111!")
                 sd['enodeb'] = enodeb
-                sd['profile'] = p['Profile']
-                sd['dlallocrbrate'] = p_specs[p['Profile']]['dlallocrbrate']
-                sd['ulallocrbrate'] = p_specs[p['Profile']]['ulallocrbrate']
-                sd['time'] = s['Time']/1000
-                sd['dlbitrate'] = s['DlBitrate']
-                sd['ulbitrate'] = s['UlBitrate']
-                stats.append(sd)
+                if (p.get('Profile') and p_specs.get(p['Profile'])):
+                    sd['profile'] = p['Profile']
+                    logger.debug("222222222") 
+                    sd['dlallocrbrate'] = p_specs[p['Profile']]['dlallocrbrate']
+                    sd['ulallocrbrate'] = p_specs[p['Profile']]['ulallocrbrate']
+                    logger.debug("33333333333")
+                    sd['time'] = s['Time']/1000
+                    sd['dlbitrate'] = s['DlBitrate']
+                    sd['ulbitrate'] = s['UlBitrate']
+                    logger.debug("44444444")
+                    stats.append(sd)
         return stats 
     except Exception:
         logger.warning("Couldn't get Enodeb stats")
