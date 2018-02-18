@@ -24,14 +24,15 @@ producer = None
 start_publish = False
 
 enodeb_demo = "302"
-profile_demo = "video"
+profile_demo = "video-slice"
 onos_url = "10.128.13.3:8183"
+
 enodebs_url = "http://"+onos_url+"/onos/progran/enodeb"
 enodeb_stats_url = "http://"+onos_url+"/onos/progran/stats/enodeb"
 profile_url = "http://"+onos_url+"/onos/progran/profile"
-t = 10
+t = 2 
 
-enodeb_log = open("enodeb_log.txt",'w')
+#enodeb_log = open("enodeb_log.txt",'w')
 
 """
 logging_format = '%(asctime)-15s %(message)s'
@@ -48,7 +49,7 @@ def shutdown_hook(kafka_producer):
     """
     logging.info('Shutdown kafka producer')
     kafka_producer.close()
-    enodeb_log.close()
+    #enodeb_log.close()
 
 
 @app.route('/')
@@ -98,7 +99,7 @@ def publish_stats(enodeb_stats):
             msg = 'enodeb' + ',' + str(e)   
             producer.send(topic=produce_topic, key=str(e['enodeb']).encode('utf-8'), value=msg.encode('utf-8'))
             logging.info('Publishing Enodeb event: %s', msg)
-            enodeb_log.write(str(e)+'\n')
+            #enodeb_log.write(str(e)+'\n')
     except Exception as e:
             return e.__str__()
 
@@ -106,14 +107,14 @@ def periodic_publish():
     global start_publish
     if not start_publish:
         return
-    logging.info('start periodic publish...')
+    logging.debug('start periodic publish...')
     try:
         r1 = requests.get(url = profile_url)
         r1_json = r1.json()
         p_specs = stats.get_profile_specs(r1_json)
-        logging.debug("p_specs:%s", str(p_specs))
+        logging.debug("profile specs:%s", str(p_specs))
         if len(p_specs):
-            ###fixed enodeb id for poc
+            ###fixed enodeb id for demo 
             """
             #r2 = requests.get(url = enodebs_URL)
             #r2_json = r2.json()
@@ -129,6 +130,8 @@ def periodic_publish():
                 logging.debug("enodeb stats:%s", str(enodeb_stats))
                 if len(enodeb_stats):
                     publish_stats(enodeb_stats)
+        else:
+            logging.warn("no profile specs found")
 
         threading.Timer(t, periodic_publish).start()
     except Exception as e:

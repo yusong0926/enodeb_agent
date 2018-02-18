@@ -5,10 +5,12 @@ import logging
 import logging.handlers
 import logging.config
 
-logger_format = '%(asctime)-15s %(message)s'
-logging.basicConfig(format=logger_format)
-logger = logging.getLogger('enodeb_stats')
-logger.setLevel(logging.DEBUG)
+"""
+logging_format = '%(asctime)-15s %(message)s'
+logging.basicConfig(format=logging_format)
+logging = logging.getLogger('enodeb_stats')
+logging.setLevel(logging.DEBUG)
+"""
 
 """
 def get_enodebs(data):
@@ -17,49 +19,42 @@ def get_enodebs(data):
         enodebs = [e['eNBId'] for e in data["EnodeBArray"]]
         return enodebs
     except Exception:
-        logger.warning("Couldn't get Enodeb information")
+        logging.warning("Couldn't get Enodeb information")
         return None 
 """
 
 def get_enodeb_stats(data, enodeb, p_specs):
-    #r = requests.get(url = URL+'/'+enodeb)
-    #data = r.json()
-    logger.debug(data)
-    logger.debug(enodeb)
-    logger.debug(p_specs)
+
+    logging.debug("start to parse stats of enodeb %s", enodeb)
+    logging.debug("raw stats: %s", data)
+    logging.debug("profile specs %s", p_specs)
     try:
         stats = []
         for p in data['EnodeBStatsArray']:
-            logger.debug(p)
+            logging.debug("start to parse stats of profile %s", p.get('Profile'))
             for s in p['StatsArray']:
                 sd = {}
-                logger.debug("111111111!")
                 sd['enodeb'] = enodeb
                 if (p.get('Profile') and p_specs.get(p['Profile'])):
                     sd['profile'] = p['Profile']
-                    logger.debug("222222222") 
                     sd['dlallocrbrate'] = p_specs[p['Profile']]['dlallocrbrate']
                     sd['ulallocrbrate'] = p_specs[p['Profile']]['ulallocrbrate']
-                    logger.debug("33333333333")
                     sd['time'] = s['Time']/1000
                     sd['dlbitrate'] = s['DlBitrate']
                     sd['ulbitrate'] = s['UlBitrate']
-                    logger.debug("44444444")
                     stats.append(sd)
         return stats 
     except Exception:
-        logger.warning("Couldn't get Enodeb stats")
+        logging.warning("Couldn't get Enodeb stats")
         return [] 
 
+
 def get_profile_specs(data):
-    #r = requests.get(url = URL + '/'+'profile')
-    #data = r.json()
+
     p_specs = {}
-    logger.debug(data)
+    logging.debug("start to parse profile specs raw %s", data)
     try:
         for p in data['ProfileArray']:
-            logger.debug(type(p))
-            logger.debug(p)
             dlallocrbrate = p.get('DlAllocRBRate')
             ulallocrbrate = p.get('UlAllocRBRate')
             p_name = p.get('Name')
@@ -69,6 +64,6 @@ def get_profile_specs(data):
             p_specs[p_name] = specs
         return p_specs
     except Exception:
-        logger.warning("Couldn't get Enodeb Profile specs")
+        logging.warning("Couldn't get Enodeb Profile specs")
         return {}
 
