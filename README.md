@@ -11,6 +11,7 @@ python3 monitoring_agent.py
 ```
 ## Start Monitoring
 t: frequency to pull service api to get service running stats
+
 target: kafka address where the stats will be published
 ```sh
 curl -i -H "Content-Type: application/json" -X POST -d '{"t":1,"target":"127.0.0.1:9092"}' -L http://localhost:5004/monitoring/agent/enodeb/start
