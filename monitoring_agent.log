@@ -1,0 +1,4 @@
+'2018-08-07 00:53:03,470 monitoring_agent.py INFO Service monitoring is listening on port 5004'
+'2018-08-07 00:53:03,958 _internal.py INFO  * Running on http://0.0.0.0:5004/ (Press CTRL+C to quit)'
+'2018-08-07 00:53:19,356 monitoring_agent.py INFO Service monitoring is listening on port 5004'
+'2018-08-07 00:53:19,360 _internal.py INFO  * Running on http://0.0.0.0:5004/ (Press CTRL+C to quit)'
