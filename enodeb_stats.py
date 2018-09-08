@@ -39,9 +39,10 @@ def get_enodeb_stats(data, enodeb, p_specs):
                     sd['profile'] = p['Profile']
                     sd['dlallocrbrate'] = p_specs[p['Profile']]['dlallocrbrate']
                     sd['ulallocrbrate'] = p_specs[p['Profile']]['ulallocrbrate']
-                    sd['time'] = s['Time']/1000
+                    sd['time'] = s['Time']
                     sd['dlbitrate'] = s['DlBitrate']
                     sd['ulbitrate'] = s['UlBitrate']
+                    sd['event-type'] = "ran-status"
                     stats.append(sd)
         return stats 
     except Exception:

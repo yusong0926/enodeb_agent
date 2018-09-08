@@ -10,6 +10,7 @@ import enodeb_stats as stats
 import threading
 import subprocess
 import six
+import json
 #from urllib.parse import urlparse
 from kafka import KafkaProducer
 import atexit
@@ -18,14 +19,14 @@ from random import randint
 
 app = Flask(__name__)
 
-produce_topic = 'event-raw'
+produce_topic = 'enodeb-raw'
 kafka_broker = '127.0.0.1:9092'
 producer = None
 start_publish = False
 
 enodeb_demo = "302"
 profile_demo = "video-slice"
-onos_url = "10.128.13.3:8183"
+onos_url = "10.90.0.217:30415"
 
 enodebs_url = "http://"+onos_url+"/onos/progran/enodeb"
 enodeb_stats_url = "http://"+onos_url+"/onos/progran/stats/enodeb"
@@ -96,7 +97,7 @@ def publish_stats(enodeb_stats):
     global producer
     try:
         for e in enodeb_stats:
-            msg = 'enodeb' + ',' + str(e)   
+            msg = json.dumps(e)   
             producer.send(topic=produce_topic, key=str(e['enodeb']).encode('utf-8'), value=msg.encode('utf-8'))
             logging.info('Publishing Enodeb event: %s', msg)
             #enodeb_log.write(str(e)+'\n')
